@@ -23,4 +23,8 @@ return array(
             'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory',
         ),
     ),
+    'db' => array(
+        'driver'   => 'Pdo_Sqlite',
+        'database' => LUIGI_ROOT . '/data/db/luigi.sqlite3.db',
+    ),
 );
