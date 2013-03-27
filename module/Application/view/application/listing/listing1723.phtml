@@ -1,0 +1,59 @@
+<?php 
+/**
+ * ZF2 Buch Kapitel 17
+ * 
+ * Das Buch "Zend Framework 2 - Von den Grundlagen bis zur fertigen Anwendung"
+ * von Ralf Eggert ist im Addison-Wesley Verlag erschienen. 
+ * ISBN 978-3-8273-2994-3
+ * 
+ * @package    Application
+ * @author     Ralf Eggert <r.eggert@travello.de>
+ * @copyright  Alle Listings sind urheberrechtlich geschützt!
+ * @link       http://www.zendframeworkbuch.de/ und http://www.awl.de/2994
+ */
+
+/**
+ * Listing 17.23 view script
+ * 
+ * @package    Application
+ */
+
+$this->headTitle('Listing 17.23');
+$this->pageTitle('Listing 17.23');
+?>
+<h3><code>index.phtml</code> zeigt Benutzer Introseite an</h3>
+<pre>
+&lt;?php
+$user = $this-&gt;identity;
+$name = $user-&gt;getFirstname() . ' ' . $user-&gt;getLastname();
+
+$this-&gt;headTitle('Benutzer anzeigen');
+$this-&gt;pageTitle('Schön, dass Sie da sind, ' . $name);
+?&gt;
+&lt;table class="table table-data"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;th&gt;E-Mail:&lt;/th&gt;
+&lt;td&gt;&lt;?php echo $user-&gt;getEmail(); ?&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;th&gt;Name:&lt;/th&gt;
+&lt;td&gt;&lt;?php echo $name; ?&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;th&gt;Rolle:&lt;/th&gt;
+&lt;td&gt;&lt;?php echo $user-&gt;getRoleName(); ?&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;th&gt;&amp;nbsp;&lt;/th&gt;
+&lt;td&gt;
+&lt;?php if ($this-&gt;userIsAllowed('user-admin')): ?&gt;
+&lt;?php $url = $this-&gt;url('user-admin'); ?&gt;
+&lt;a href="&lt;?php echo $url; ?&gt;" class="btn"&gt;Benutzer verwalten&lt;/a&gt;
+&lt;?php endif; ?&gt;
+&lt;a href="/" class="btn"&gt;Zurück zur Homepage&lt;/a&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+</pre>

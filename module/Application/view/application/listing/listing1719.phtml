@@ -1,0 +1,51 @@
+<?php 
+/**
+ * ZF2 Buch Kapitel 17
+ * 
+ * Das Buch "Zend Framework 2 - Von den Grundlagen bis zur fertigen Anwendung"
+ * von Ralf Eggert ist im Addison-Wesley Verlag erschienen. 
+ * ISBN 978-3-8273-2994-3
+ * 
+ * @package    Application
+ * @author     Ralf Eggert <r.eggert@travello.de>
+ * @copyright  Alle Listings sind urheberrechtlich geschützt!
+ * @link       http://www.zendframeworkbuch.de/ und http://www.awl.de/2994
+ */
+
+/**
+ * Listing 17.19 view script
+ * 
+ * @package    Application
+ */
+
+$this->headTitle('Listing 17.19');
+$this->pageTitle('Listing 17.19');
+?>
+<h3>View-Skript <code>logout.phtml</code> für Logout-Widget</h3>
+<pre>
+&lt;?php
+$user = $this-&gt;identity;
+
+$actionUrl = $this-&gt;url('user/action', array('action' =&gt; 'logout'));
+?&gt;
+&lt;div class="well"&gt;
+&lt;h4 class="pull-center"&gt;Sie sind angemeldet&lt;/h4&gt;
+&lt;table style="width: 100%;" class="table table-data"&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;th&gt;E-Mail:&lt;/th&gt;
+&lt;td&gt;&lt;?php echo $user-&gt;getEmail(); ?&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;th&gt;Name:&lt;/th&gt;
+&lt;td&gt;
+&lt;?php echo $user-&gt;getFirstname(); ?&gt; &lt;?php echo $user-&gt;getLastname(); ?&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div class="pull-center"&gt;
+&lt;?php echo $this-&gt;showForm($this-&gt;form, $actionUrl, 'form-vertical'); ?&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</pre>

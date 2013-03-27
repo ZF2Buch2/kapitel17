@@ -1,0 +1,168 @@
+<?php 
+/**
+ * ZF2 Buch Kapitel 17
+ * 
+ * Das Buch "Zend Framework 2 - Von den Grundlagen bis zur fertigen Anwendung"
+ * von Ralf Eggert ist im Addison-Wesley Verlag erschienen. 
+ * ISBN 978-3-8273-2994-3
+ * 
+ * @package    Application
+ * @author     Ralf Eggert <r.eggert@travello.de>
+ * @copyright  Alle Listings sind urheberrechtlich geschützt!
+ * @link       http://www.zendframeworkbuch.de/ und http://www.awl.de/2994
+ */
+
+/**
+ * Listing 17.2 view script
+ * 
+ * @package    Application
+ */
+
+$this->headTitle('Listing 17.2');
+$this->pageTitle('Listing 17.2');
+?>
+<h3><code>DbBcryptAdapter</code> Authentifizierungsadapter</h3>
+<pre>
+&lt;?php
+namespace User\Authentication;
+
+use Zend\Authentication\Result;
+use Zend\Authentication\Adapter\AdapterInterface;
+use Zend\Crypt\Password\Bcrypt;
+use User\Table\UserTableInterface;
+
+class DbBcryptAdapter implements AdapterInterface
+{
+    protected $table = null;
+    protected $bcrypt = null;
+    protected $identity = null;
+    protected $credential = null;
+    protected $authenticateResultInfo = null;
+
+    public function __construct(UserTableInterface $table, Bcrypt $bcrypt)
+    {
+        $this->setTable($table);
+        $this->setBcrypt($bcrypt);
+    }
+    
+    public function getTable()
+    {
+        return $this->table;
+    }
+    
+    public function setTable(UserTableInterface $table)
+    {
+        $this->table = $table;
+        return $this;
+    }
+    
+    public function getBcrypt()
+    {
+        return $this->bcrypt;
+    }
+    
+    public function setBcrypt(Bcrypt $bcrypt)
+    {
+        $this->bcrypt = $bcrypt;
+        return $this;
+    }
+    
+    public function getIdentity()
+    {
+        return $this->identity;
+    }
+    
+    public function setIdentity($value)
+    {
+        $this->identity = trim($value);
+        return $this;
+    }
+
+    public function getCredential()
+    {
+        return $this->credential;
+    }
+    
+    public function setCredential($credential)
+    {
+        $this->credential = $credential;
+        return $this;
+    }
+
+    protected function setupResult()
+    {
+        // setup result info
+        $this->authenticateResultInfo = array(
+            'code'     => Result::FAILURE,
+            'identity' => $this->getIdentity(),
+            'messages' => array()
+        );
+        
+        return true;
+    }
+    
+    protected function createResult()
+    {
+        return new Result(
+            $this->authenticateResultInfo['code'],
+            $this->authenticateResultInfo['identity'],
+            $this->authenticateResultInfo['messages']
+        );
+    }
+    
+    public function authenticate()
+    {
+        // set authentication
+        $this->setupResult();
+        
+        // check for identity
+        if (!$this->getIdentity()) {
+            $this->authenticateResultInfo['messages'][] = 
+                'Sie haben keine E-Mail Adresse eingegeben!';
+            return $this->createResult();
+        }
+        
+        // check for credential
+        if (!$this->getCredential()) {
+            $this->authenticateResultInfo['messages'][] = 
+                'Sie haben kein Passwort eingegeben!';
+            return $this->createResult();
+        }
+        
+        // fetch dataset for identity
+        $user = $this->getTable()->fetchSingleByEmail($this->getIdentity());
+        
+        // check user
+        if (!$user) {
+            $this->authenticateResultInfo['code'      ] = 
+                Result::FAILURE_IDENTITY_NOT_FOUND;
+            $this->authenticateResultInfo['messages'][] = 
+                'Es gibt keinen Benutzer für die E-Mail Adresse!';
+            return $this->createResult();
+        }
+        
+        // verify password
+        $bcrypt = $this->getBcrypt();
+        $verify = $bcrypt->verify($this->getCredential(), $user->getPass());
+        
+        // check password
+        if (!$verify) {
+            $this->authenticateResultInfo['code'      ] = 
+                Result::FAILURE_CREDENTIAL_INVALID;
+            $this->authenticateResultInfo['messages'][] = 
+                'Das Passwort ist falsch!';
+            return $this->createResult();
+        }
+        
+        // clear password
+        $user->setPass('');
+        
+        // successful
+        $this->authenticateResultInfo['code'      ] = Result::SUCCESS;
+        $this->authenticateResultInfo['identity'  ] = $user;
+        $this->authenticateResultInfo['messages'][] = 
+            'Sie haben sich erfolgreich angemeldet!';
+        return $this->createResult();
+    }
+}
+</pre>

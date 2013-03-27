@@ -1,0 +1,39 @@
+<?php 
+/**
+ * ZF2 Buch Kapitel 17
+ * 
+ * Das Buch "Zend Framework 2 - Von den Grundlagen bis zur fertigen Anwendung"
+ * von Ralf Eggert ist im Addison-Wesley Verlag erschienen. 
+ * ISBN 978-3-8273-2994-3
+ * 
+ * @package    Application
+ * @author     Ralf Eggert <r.eggert@travello.de>
+ * @copyright  Alle Listings sind urheberrechtlich geschützt!
+ * @link       http://www.zendframeworkbuch.de/ und http://www.awl.de/2994
+ */
+
+/**
+ * Listing 17.11 view script
+ * 
+ * @package    Application
+ */
+
+$this->headTitle('Listing 17.11');
+$this->pageTitle('Listing 17.11');
+?>
+<h3>Konfiguration der Benutzerrechte für <code>Blog</code>-Modul</h3>
+<pre>
+&lt;?php
+return array(
+    [...]
+    
+    'acl' => array(
+        'guest'   => array(
+            'blog' => array('allow' => null),
+        ),
+        'staff'   => array(
+            'blog-admin' => array('allow' => null),
+        ),
+    ),
+);
+</pre>

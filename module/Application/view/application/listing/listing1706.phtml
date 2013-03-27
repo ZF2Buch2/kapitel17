@@ -1,0 +1,117 @@
+<?php 
+/**
+ * ZF2 Buch Kapitel 17
+ * 
+ * Das Buch "Zend Framework 2 - Von den Grundlagen bis zur fertigen Anwendung"
+ * von Ralf Eggert ist im Addison-Wesley Verlag erschienen. 
+ * ISBN 978-3-8273-2994-3
+ * 
+ * @package    Application
+ * @author     Ralf Eggert <r.eggert@travello.de>
+ * @copyright  Alle Listings sind urheberrechtlich geschützt!
+ * @link       http://www.zendframeworkbuch.de/ und http://www.awl.de/2994
+ */
+
+/**
+ * Listing 17.6 view script
+ * 
+ * @package    Application
+ */
+
+$this->headTitle('Listing 17.6');
+$this->pageTitle('Listing 17.6');
+?>
+<h3>Service für die Generierung und Verarbeitung eines <code>Acl</code>-Objektes</h3>
+<pre>
+&lt;?php
+namespace User\Acl;
+
+use Zend\Permissions\Acl\Acl;
+
+class Service
+{
+    protected $role = 'guest';
+
+    protected $config = array();
+
+    protected $acl = null;
+
+    public function __construct($role = 'guest', array $config)
+    {
+        $this->setRole($role);
+        $this->setConfig($config);
+        $this->setAcl($this->buildAcl());
+    }
+
+    public function getRole()
+    {
+        return $this->role;
+    }
+    
+    public function setRole($role)
+    {
+        $this->role = $role;
+        return $this;
+    }
+    
+    public function getConfig()
+    {
+        return $this->config;
+    }
+    
+    public function setConfig(array $config)
+    {
+        $this->config = $config;
+        return $this;
+    }
+    
+    public function getAcl()
+    {
+        return $this->acl;
+    }
+    
+    public function setAcl(Acl $acl)
+    {
+        $this->acl = $acl;
+        return $this;
+    }
+    
+    public function buildAcl()
+    {
+        $acl = new Acl();
+        $acl->addRole('guest');
+        $acl->addRole('customer', 'guest');
+        $acl->addRole('staff', 'customer');
+        $acl->addRole('admin', 'staff');
+        
+        foreach ($this->config as $role => $resources) {
+            foreach ($resources as $resource => $rules) {
+                if (!$acl->hasResource($resource)) {
+                    $acl->addResource($resource);
+                }
+        
+                foreach ($rules as $rule => $privileges) {
+                    $acl->$rule($role, $resource, $privileges);
+                }
+            }
+        }
+        
+        return $acl;
+    }
+    
+    public function isAllowed($resource, $privilege)
+    {
+        if (empty($resource) || !$this->getAcl()->hasResource($resource)) {
+            return false;
+        }
+        
+        if (empty($privilege)) {
+            return false;
+        }
+        
+        return $this->getAcl()->isAllowed(
+            $this->getRole(), $resource, $privilege
+        );
+    }
+}
+</pre>

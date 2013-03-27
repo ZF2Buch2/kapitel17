@@ -1,0 +1,44 @@
+<?php 
+/**
+ * ZF2 Buch Kapitel 17
+ * 
+ * Das Buch "Zend Framework 2 - Von den Grundlagen bis zur fertigen Anwendung"
+ * von Ralf Eggert ist im Addison-Wesley Verlag erschienen. 
+ * ISBN 978-3-8273-2994-3
+ * 
+ * @package    Application
+ * @author     Ralf Eggert <r.eggert@travello.de>
+ * @copyright  Alle Listings sind urheberrechtlich geschützt!
+ * @link       http://www.zendframeworkbuch.de/ und http://www.awl.de/2994
+ */
+
+/**
+ * Listing 17.5 view script
+ * 
+ * @package    Application
+ */
+
+$this->headTitle('Listing 17.5');
+$this->pageTitle('Listing 17.5');
+?>
+<h3><code>ServiceFactory</code> für <code>AuthenticationService</code></h3>
+<pre>
+&lt;?php
+namespace User\Authentication;
+
+use Zend\Authentication\AuthenticationService;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+
+class ServiceFactory implements FactoryInterface
+{
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        $authAdapter = $serviceLocator->get('User\Auth\Adapter');
+        
+        $auth = new AuthenticationService();
+        $auth->setAdapter($authAdapter);
+        return $auth;
+    }
+}
+</pre>

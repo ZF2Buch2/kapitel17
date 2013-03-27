@@ -1,0 +1,10 @@
+PRAGMA foreign_keys = OFF;
+BEGIN TRANSACTION;
+DROP TABLE users;
+CREATE TABLE users (id integer primary key null, role varchar(8), email varchar(128), pass varchar(60), firstname varchar(32), lastname varchar(32));
+INSERT INTO "users" VALUES(1,'admin','luigi@luigis-pizza.de','$2a$12$ZTRhelntgdGRJcGSOHsye.YHJkVFof6aVqZqoE8EGKK2KVqSQCapy','Luigi','Bartoli');
+INSERT INTO "users" VALUES(2,'staff','francesca@luigis-pizza.de','$2a$12$e5Jjk41RuYDKNnEmUTVsBu1bl7sShfBO4QF940dCDLSueCdmoF1ha','Francesca','Bartoli');
+INSERT INTO "users" VALUES(3,'staff','alessandro@luigis-pizza.de','$2a$12$VvZeVBHEC2GvLU1hyw2WouMZMPuKXBdT.Cyj9UK6KfUwXWwVDREsK','Alessandro','Altobelli');
+INSERT INTO "users" VALUES(4,'staff','valentina@luigis-pizza.de','$2a$12$qMVzu3RlIzBhS7EaHUQzLeQF0/wYeMJ360SQBoKSfsJl0kAA1P55C','Valentina','Rossi');
+COMMIT;
+PRAGMA foreign_keys = ON;

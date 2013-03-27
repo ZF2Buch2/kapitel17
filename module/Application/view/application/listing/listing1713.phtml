@@ -1,0 +1,94 @@
+<?php 
+/**
+ * ZF2 Buch Kapitel 17
+ * 
+ * Das Buch "Zend Framework 2 - Von den Grundlagen bis zur fertigen Anwendung"
+ * von Ralf Eggert ist im Addison-Wesley Verlag erschienen. 
+ * ISBN 978-3-8273-2994-3
+ * 
+ * @package    Application
+ * @author     Ralf Eggert <r.eggert@travello.de>
+ * @copyright  Alle Listings sind urheberrechtlich geschützt!
+ * @link       http://www.zendframeworkbuch.de/ und http://www.awl.de/2994
+ */
+
+/**
+ * Listing 17.13 view script
+ * 
+ * @package    Application
+ */
+
+$this->headTitle('Listing 17.13');
+$this->pageTitle('Listing 17.13');
+?>
+<h3>Änderungen für <code>UserService</code> Teil 2</h3>
+<pre>
+&lt;?php
+namespace User\Service;
+
+[...]
+
+class UserService implements 
+    EventManagerAwareInterface, 
+    UserServiceInterface
+{
+    [...]
+    
+    public function login(array $data)
+    {
+        // get form and set data
+        $form = $this->getForm('login');
+        $form->setData($data);
+        
+        // check for invalid data
+        if (!$form->isValid()) {
+            $this->setMessage('Bitte Eingaben überprüfen!');
+            return false;
+        }
+        
+        // get valid user entity object
+        $user = $form->getData();
+        
+        // get authentication
+        $authentication = $this->getAuthentication();
+        $authentication->getAdapter()->setIdentity($user['email']);
+        $authentication->getAdapter()->setCredential($user['pass']);
+        
+        // authenticate
+        $result = $authentication->authenticate();
+        
+        // get messages
+        $messages = $result->getMessages();
+        
+        // set first message
+        $this->setMessage($messages[0]);
+        
+        // check result
+        if (!$result->isValid()) {
+            return false;
+        }
+        
+        return $result->getIdentity();
+    }
+    
+    public function logout()
+    {
+        // get authentication
+        $authentication = $this->getAuthentication();
+        
+        // clear identity
+        $authentication->clearIdentity();
+        
+        // get session namespace
+        $authNamespace = new Container(Session::NAMESPACE_DEFAULT);
+        
+        // clear session
+        $authNamespace->getManager()->destroy();
+        
+        // set message
+        $this->setMessage('Sie wurden abgemeldet!');
+        
+        return true;
+    }
+}
+</pre>

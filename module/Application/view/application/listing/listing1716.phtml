@@ -1,0 +1,105 @@
+<?php 
+/**
+ * ZF2 Buch Kapitel 17
+ * 
+ * Das Buch "Zend Framework 2 - Von den Grundlagen bis zur fertigen Anwendung"
+ * von Ralf Eggert ist im Addison-Wesley Verlag erschienen. 
+ * ISBN 978-3-8273-2994-3
+ * 
+ * @package    Application
+ * @author     Ralf Eggert <r.eggert@travello.de>
+ * @copyright  Alle Listings sind urheberrechtlich geschützt!
+ * @link       http://www.zendframeworkbuch.de/ und http://www.awl.de/2994
+ */
+
+/**
+ * Listing 17.16 view script
+ * 
+ * @package    Application
+ */
+
+$this->headTitle('Listing 17.16');
+$this->pageTitle('Listing 17.16');
+?>
+<h3><code>UserShowWidget</code> View-Helper zur Anzeige eines Widgets</h3>
+<pre>
+&lt;?php
+namespace User\View\Helper;
+
+use User\Entity\UserEntityInterface;
+use User\Service\UserServiceInterface;
+use Zend\View\Helper\AbstractHelper;
+use Zend\View\Model\ViewModel;
+
+class UserShowWidget extends AbstractHelper
+{
+    protected $identity;
+    protected $userService;
+
+    public function __construct(
+        UserEntityInterface $identity = null, 
+        UserServiceInterface $userService
+    ) {
+        $this->setIdentity($identity);
+        $this->setUserService($userService);
+    }
+
+    public function setIdentity(UserEntityInterface $identity = null)
+    {
+        $this->identity = $identity;
+        return $this;
+    }
+    
+    public function getIdentity()
+    {
+        return $this->identity;
+    }
+    
+    public function setUserService(UserServiceInterface $userService = null)
+    {
+        $this->userService = $userService;
+        return $this;
+    }
+    
+    public function getUserService()
+    {
+        return $this->userService;
+    }
+    
+    public function __invoke()
+    {
+        if ($this->getIdentity()) {
+            return $this->buildLogoutWidget() . "\n";
+        } else {
+            return $this->buildLoginWidget() . "\n";
+        }
+    }
+    
+    public function buildLoginWidget()
+    {
+        if (   $this->getView()->url('user/action', array(), array(), true) 
+            == $this->getView()->url('user/action', array('action' => 'login'))) 
+        {
+            return '';
+        }
+        
+        $vm = new ViewModel(array(
+            'form' => $this->getUserService()->getForm('login'),
+        ));
+        $vm->setTemplate('widget/login');
+        
+        return $this->getView()->render($vm);
+    }
+    
+    public function buildLogoutWidget()
+    {
+        $vm = new ViewModel(array(
+            'form'     => $this->getUserService()->getForm('logout'),
+            'identity' => $this->getIdentity(),
+        ));
+        $vm->setTemplate('widget/logout');
+        
+        return $this->getView()->render($vm);
+    }
+}
+</pre>

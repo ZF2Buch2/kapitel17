@@ -1,0 +1,43 @@
+<?php 
+/**
+ * ZF2 Buch Kapitel 17
+ * 
+ * Das Buch "Zend Framework 2 - Von den Grundlagen bis zur fertigen Anwendung"
+ * von Ralf Eggert ist im Addison-Wesley Verlag erschienen. 
+ * ISBN 978-3-8273-2994-3
+ * 
+ * @package    Application
+ * @author     Ralf Eggert <r.eggert@travello.de>
+ * @copyright  Alle Listings sind urheberrechtlich geschützt!
+ * @link       http://www.zendframeworkbuch.de/ und http://www.awl.de/2994
+ */
+
+/**
+ * Listing 17.21 view script
+ * 
+ * @package    Application
+ */
+
+$this->headTitle('Listing 17.21');
+$this->pageTitle('Listing 17.21');
+?>
+<h3><code>forbiddenAction()</code> Methode aus dem <code>UserController</code></h3>
+<pre>
+&lt;?php
+namespace User\Controller;
+
+use Zend\Http\PhpEnvironment\Response;
+use Zend\View\Model\ViewModel;
+use Zend\Mvc\Controller\AbstractActionController;
+use User\Service\UserServiceInterface;
+
+class UserController extends AbstractActionController
+{
+    [...]
+    
+    public function forbiddenAction()
+    {
+        $this->getResponse()->setStatusCode(Response::STATUS_CODE_403);
+    }
+}
+</pre>
